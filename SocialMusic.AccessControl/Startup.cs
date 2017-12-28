@@ -53,8 +53,7 @@ namespace SocialMusic.AccessControl
                     });
             });
 
-            var appSettings = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettings);
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddMvc();
             services.Configure<MvcOptions>(options =>

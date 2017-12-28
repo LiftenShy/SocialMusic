@@ -37,7 +37,7 @@ namespace SocialMusic.AccessControl.AccountAPI
             {
                 var user = _mapper.Map<UserProfileModel, UserProfile>(account);
 
-                var result = await _connector.Post(_appSettings.Value.Person_ProjectAPI.UserProfileURLs.Post, user);
+                var result = await _connector.Post(_appSettings.Value.API.UserProfileUrl.Post, user);
 
                 if (result.IsSuccessStatusCode)
                 {

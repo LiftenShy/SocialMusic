@@ -2,7 +2,7 @@
 
 namespace SocialMusic.Buisness.Settings
 {
-    public class UserProfileURLs
+    public class UserProfileUrl
     {
         public string Post { get; set; }
         public string Get { get; set; }
