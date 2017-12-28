@@ -41,8 +41,7 @@ namespace SocialMusic.AccessControl.AccountAPI
 
                 if (result.IsSuccessStatusCode)
                 {
-                    _tokenService.Authorize(user);
-                    return Ok();
+                    return Ok(new {UserName = account.LoginName, Token = _tokenService.Authorize(user)});
                 }
 
                 return BadRequest($"User with this name:{user.LoginName} already have");

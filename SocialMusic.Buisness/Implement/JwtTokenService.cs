@@ -21,7 +21,7 @@ namespace SocialMusic.Buisness.Implements
             _appSettings = appSettings;
         }
 
-        public void Authorize(UserProfile user)
+        public SecurityToken Authorize(UserProfile user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Value.Secret);
@@ -42,7 +42,7 @@ namespace SocialMusic.Buisness.Implements
                     new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature
                 )
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+           return tokenHandler.CreateToken(tokenDescriptor);
         }
     }
 }
