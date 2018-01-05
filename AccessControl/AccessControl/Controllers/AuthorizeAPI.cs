@@ -52,5 +52,27 @@ namespace AccessControl.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        public async Task<IActionResult> LoginInAsync([FromBody] UserProfileModel account)
+        {
+            try
+            {
+                var user = _mapper.Map<UserProfileModel, UserProfile>(account);
+
+                var result = await _connector.Get(_appSettings.Value.API.UserProfileUrl.Get, user);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    return Ok(new { UserName = account.LoginName, Token = _tokenService.Authorize(user) });
+                }
+
+                return BadRequest($"User with this name:{user.LoginName} already have");
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
