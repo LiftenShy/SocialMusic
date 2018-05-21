@@ -1,2 +1,2 @@
-# PersonalProject
+# Social Music club
 Personal project
