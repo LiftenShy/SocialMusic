@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace AccountManager
 {
@@ -32,6 +33,20 @@ namespace AccountManager
             services.AddDbContext<AccountManagerContext>(x =>
                 x.UseSqlServer(Configuration.GetSection("ConnectionString").Value));
             services.AddMvc();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Account manager api", Version = "v1"});
+
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Autthorization header",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+            });
+
             services.AddAutoMapper();
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -57,6 +72,7 @@ namespace AccountManager
                     };
                 });
 
+            services.AddScoped<DbContext, AccountManagerContext>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         }
@@ -73,6 +89,17 @@ namespace AccountManager
                 .AllowCredentials());
 
             app.UseAuthentication();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Account manager api v1");
+            });
+
+            app.UseDeveloperExceptionPage();
+
+            app.UseDatabaseErrorPage();
 
             app.UseMvc();
         }

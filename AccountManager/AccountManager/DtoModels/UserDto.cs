@@ -1,5 +1,5 @@
 ﻿
-namespace AccountManager.Data.Models
+namespace AccountManager.DtoModels
 {
     public class UserDto
     {

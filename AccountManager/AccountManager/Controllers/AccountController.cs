@@ -6,6 +6,7 @@ using System.Text;
 using AccountManager.Buisness.Helpers;
 using AccountManager.Buisness.Interfaces;
 using AccountManager.Data.Models;
+using AccountManager.DtoModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,9 @@ namespace AccountManager.Controllers
             var user = _userService.Authenticate(userDto.Username, userDto.Password);
 
             if (user == null)
+            {
                 return Unauthorized();
+            }
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -79,7 +82,7 @@ namespace AccountManager.Controllers
                 _userService.Create(user, userDto.Password);
                 return Ok();
             }
-            catch (AppException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -112,7 +115,7 @@ namespace AccountManager.Controllers
                 _userService.Update(user, userDto.Password);
                 return Ok();
             }
-            catch (AppException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

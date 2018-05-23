@@ -29,7 +29,7 @@ namespace AccountManager.Buisness.Implements
                 return null;
             }
 
-            if (!CryptoService.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            if (CryptoService.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             {
                 return null;
             }
@@ -40,11 +40,11 @@ namespace AccountManager.Buisness.Implements
         public User Create(User user, string password)
         {
             if (string.IsNullOrWhiteSpace(password))
-                throw new AppException("Password is required");
+                throw new ArgumentException("Password is required");
 
             if (_userRepository.Table.Any(x => x.Username == user.Username))
             {
-                throw new AppException($"Username {user.Username} is already taken");
+                throw new ArgumentException($"Username {user.Username} is already taken");
             }
 
             CryptoService.CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
@@ -81,13 +81,13 @@ namespace AccountManager.Buisness.Implements
             var user = _userRepository.GetById(userParam.Id);
 
             if (user == null)
-                throw new AppException("User not found");
+                throw new ArgumentException("User not found");
 
             if (userParam.Username != user.Username)
             {
                 if (_userRepository.Table.Any(x => x.Username == userParam.Username))
                 {
-                    throw new AppException($"Username {userParam.Username} is already taken");
+                    throw new ArgumentException($"Username {userParam.Username} is already taken");
                 }
             }
 
