@@ -19,16 +19,16 @@ namespace AccountManager.Controllers
     [Route("[controller]")]
     public class AccountController : Controller
     {
-        private readonly IUserService _userService;
+        private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
 
         public AccountController(
-            IUserService userService,
+            IAccountService accountService,
             IMapper mapper,
             IOptions<AppSettings> appSettings)
         {
-            _userService = userService;
+            _accountService = accountService;
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
@@ -36,11 +36,11 @@ namespace AccountManager.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] UserDto userDto)
+        public IActionResult Authenticate([FromBody] AccountDto accountDto)
         {
-            var user = _userService.Authenticate(userDto.Username, userDto.Password);
+            var account = _accountService.Authenticate(accountDto.Username, accountDto.Password);
 
-            if (user == null)
+            if (account == null)
             {
                 return Unauthorized();
             }
@@ -51,35 +51,38 @@ namespace AccountManager.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, "User")
+                    new Claim(ClaimTypes.Name, account.AccountId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials =
                     new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+            foreach (var role in account.Roles)
+            {
+                tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
+            }
+            
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
             return Ok(new
             {
-                user.Id,
-                user.Username,
-                user.FirstName,
-                user.LastName,
+                account.AccountId,
+                account.Username,
+                account.Email,
                 Token = tokenString
             });
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Register([FromBody] UserDto userDto)
+        public IActionResult Register([FromBody] AccountDto accountDto)
         {
-            var user = _mapper.Map<User>(userDto);
+            var account = _mapper.Map<Account>(accountDto);
 
             try
             {
-                _userService.Create(user, userDto.Password);
+                _accountService.Create(account, accountDto.Password);
                 return Ok();
             }
             catch (Exception ex)
@@ -91,28 +94,28 @@ namespace AccountManager.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _userService.GetAll();
-            var userDtos = _mapper.Map<IList<UserDto>>(users);
+            var users = _accountService.GetAll();
+            var userDtos = _mapper.Map<IList<AccountDto>>(users);
             return Ok(userDtos);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var user = _userService.GetById(id);
-            var userDto = _mapper.Map<UserDto>(user);
+            var user = _accountService.GetById(id);
+            var userDto = _mapper.Map<AccountDto>(user);
             return Ok(userDto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] UserDto userDto)
+        public IActionResult Update(int id, [FromBody] AccountDto accountDto)
         {
-            var user = _mapper.Map<User>(userDto);
-            user.Id = id;
+            var account = _mapper.Map<Account>(accountDto);
+            account.AccountId = id;
 
             try
             {
-                _userService.Update(user, userDto.Password);
+                _accountService.Update(account, accountDto.Password);
                 return Ok();
             }
             catch (Exception ex)
@@ -124,7 +127,7 @@ namespace AccountManager.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _userService.Delete(id);
+            _accountService.Delete(id);
             return Ok();
         }
     }

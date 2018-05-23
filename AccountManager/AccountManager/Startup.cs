@@ -80,7 +80,7 @@ namespace AccountManager
                 });
 
             services.AddScoped<DbContext, AccountManagerContext>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         }
 

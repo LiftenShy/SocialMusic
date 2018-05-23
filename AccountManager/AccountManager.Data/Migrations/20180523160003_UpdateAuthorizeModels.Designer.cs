@@ -11,9 +11,10 @@ using System;
 namespace AccountManager.Data.Migrations
 {
     [DbContext(typeof(AccountManagerContext))]
-    partial class AccountManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20180523160003_UpdateAuthorizeModels")]
+    partial class UpdateAuthorizeModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
