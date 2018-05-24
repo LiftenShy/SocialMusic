@@ -5,6 +5,7 @@ using AccountManager.Buisness.Helpers;
 using AccountManager.Buisness.Interfaces;
 using AccountManager.Data.Interfaces;
 using AccountManager.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountManager.Buisness.Implements
 {
@@ -24,7 +25,9 @@ namespace AccountManager.Buisness.Implements
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
 
-            var account = _accountRepository.Table.FirstOrDefault(x => x.Username == username);
+            var account = _accountRepository.Table.Include(a => a.Roles)
+                                                  .ThenInclude(ar => ar.Role)
+                                                  .FirstOrDefault(x => x.Username == username);
 
             if (account == null)
             {
@@ -54,7 +57,12 @@ namespace AccountManager.Buisness.Implements
             account.PasswordHash = passwordHash;
             account.PasswordSalt = passwordSalt;
 
-            account.Roles.Add(new AccountRole { Account = account, Role = _roleRepository.Table.FirstOrDefault(r => r.Name.Equals("User"))});
+            account.Roles = new List<AccountRole>
+            {
+                new AccountRole { AccountId  = account.AccountId, RoleId = _roleRepository.Table.FirstOrDefault(r => r.Name.Equals("User")).RoleId} 
+            };
+
+            account.User = new User { Account = account, Age = null, Bithrday = null, FirstName = null, LastName = null};
 
             _accountRepository.Insert(account);
 

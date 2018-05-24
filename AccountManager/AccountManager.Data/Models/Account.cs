@@ -22,8 +22,8 @@ namespace AccountManager.Data.Models
 
         public byte[] PasswordSalt { get; set; }
 
-        public virtual User User { get; set; }
+        public User User { get; set; }
 
-        public virtual ICollection<AccountRole> Roles { get; set; }
+        public ICollection<AccountRole> Roles { get; set; }
     }
 }

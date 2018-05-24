@@ -12,6 +12,6 @@ namespace AccountManager.Data.Models
         [Column(TypeName = "nvarchar(100)")]
         public string Name { get; set; }
 
-        public virtual ICollection<AccountRole> Accounts { get; set; }
+        public ICollection<AccountRole> Accounts { get; set; }
     }
 }

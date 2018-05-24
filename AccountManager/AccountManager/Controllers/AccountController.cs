@@ -92,6 +92,7 @@ namespace AccountManager.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "User")]
         public IActionResult GetAll()
         {
             var users = _accountService.GetAll();
@@ -100,6 +101,7 @@ namespace AccountManager.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetById(int id)
         {
             var user = _accountService.GetById(id);

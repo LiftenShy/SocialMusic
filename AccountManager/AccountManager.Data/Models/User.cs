@@ -17,6 +17,6 @@ namespace AccountManager.Data.Models
         public DateTime? Bithrday { get; set; }
         public int? Age { get; set; }
 
-        public virtual Account Account { get; set; }
+        public Account Account { get; set; }
     }
 }

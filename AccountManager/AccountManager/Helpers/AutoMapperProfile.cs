@@ -8,8 +8,8 @@ namespace AccountManager.Helpers
     {
         public AutoMapperProfile()
         {
-            CreateMap<User, AccountDto>();
-            CreateMap<AccountDto, User>();
+            CreateMap<Account, AccountDto>();
+            CreateMap<AccountDto, Account>();
         }
     }
 }
