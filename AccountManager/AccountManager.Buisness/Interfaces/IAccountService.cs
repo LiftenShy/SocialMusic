@@ -1,20 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AccountManager.Data.Models;
 
 namespace AccountManager.Buisness.Interfaces
 {
     public interface IAccountService
     {
-        Account Authenticate(string username, string password);
+        Task<Account> Authenticate(string email, string password);
 
-        IEnumerable<Account> GetAll();
+        Task<IEnumerable<Account>> GetAll();
 
-        Account GetById(int userId);
+        Task<Account> GetByUsername(string username);
 
-        Account Create(Account account, string password);
+        Task<Account> GetByEmail(string email);
 
-        void Update(Account userParam, string password = null);
+        Task<Account> Create(Account account, string password);
 
-        void Delete(int userId);
+        void Update(Account accountParam, string password = null);
+
+        void Delete(int accountId);
     }
 }

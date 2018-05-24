@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <EmbeddedResource Include="Certificate\cerft.pfx" />
+    <Content Include="Certificate\Cerftificate.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +28,10 @@
   <ItemGroup>
     <ProjectReference Include="..\AccountManager.Buisness\AccountManager.Buisness.csproj" />
     <ProjectReference Include="..\AccountManager.Data\AccountManager.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

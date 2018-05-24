@@ -10,6 +10,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +36,10 @@ namespace AccountManager
             services.AddDbContext<AccountManagerContext>(x =>
                 x.UseSqlServer(Configuration.GetSection("ConnectionString").Value));
             services.AddMvc();
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new RequireHttpsAttribute());
+            });
 
             services.AddSwaggerGen(c =>
             {
@@ -77,7 +83,23 @@ namespace AccountManager
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
-                });
+                
+                })
+                .AddFacebook(options =>
+                {
+                    options.AppId = Configuration["auth:facboo"];
+                    options.AppSecret = Configuration[""];
+                })
+                .AddGoogle(options =>
+                {
+                    options.ClientId = Configuration["auth:google:clientid"];
+                    options.ClientSecret = Configuration["auth:google:clientsecret"];
+                })
+                .AddTwitter(options =>
+                {
+                    options.ConsumerKey = Configuration["auth:twitter:consumerkey"];
+                    options.ConsumerSecret = Configuration["auth:twitter:consumersecret"];
+                }); ; ;
 
             services.AddScoped<DbContext, AccountManagerContext>();
             services.AddScoped<IAccountService, AccountService>();
@@ -108,6 +130,9 @@ namespace AccountManager
             app.UseDeveloperExceptionPage();
 
             app.UseDatabaseErrorPage();
+
+            var options = new RewriteOptions().AddRedirectToHttps();
+            app.UseRewriter(options);
 
             app.UseMvc();
         }

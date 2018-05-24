@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.Threading.Tasks;
 using AccountManager.Buisness.Helpers;
 using AccountManager.Buisness.Interfaces;
 using AccountManager.Data.Models;
@@ -11,7 +9,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace AccountManager.Controllers
 {
@@ -21,7 +18,7 @@ namespace AccountManager.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
-        private readonly AppSettings _appSettings;
+        
 
         public AccountController(
             IAccountService accountService,
@@ -30,47 +27,26 @@ namespace AccountManager.Controllers
         {
             _accountService = accountService;
             _mapper = mapper;
-            _appSettings = appSettings.Value;
         }
 
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] AccountDto accountDto)
+        public async Task<IActionResult> Authenticate([FromBody] AccountDto accountDto)
         {
-            var account = _accountService.Authenticate(accountDto.Username, accountDto.Password);
+            var account = await _accountService.Authenticate(accountDto.Email, accountDto.Password);
 
             if (account == null)
             {
-                return Unauthorized();
+                return NotFound();
             }
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, account.AccountId.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials =
-                    new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            foreach (var role in account.Roles)
-            {
-                tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
-            }
-            
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
 
             return Ok(new
             {
                 account.AccountId,
                 account.Username,
                 account.Email,
-                Token = tokenString
+                account.Token
             });
         }
 
@@ -93,20 +69,20 @@ namespace AccountManager.Controllers
 
         [HttpGet]
         [Authorize(Roles = "User")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var users = _accountService.GetAll();
-            var userDtos = _mapper.Map<IList<AccountDto>>(users);
-            return Ok(userDtos);
+            var account = await _accountService.GetAll();
+            var accountDtos = _mapper.Map<IList<AccountDto>>(account);
+            return Ok(accountDtos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{Email}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetByEmail(string email)
         {
-            var user = _accountService.GetById(id);
-            var userDto = _mapper.Map<AccountDto>(user);
-            return Ok(userDto);
+            var account = await _accountService.GetByUsername(email);
+            var accountDto = _mapper.Map<AccountDto>(account);
+            return Ok(accountDto);
         }
 
         [HttpPut("{id}")]

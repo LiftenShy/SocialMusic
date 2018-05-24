@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AccountManager.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,17 +21,17 @@ namespace AccountManager.Data.Implements
             _context = context;
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            return Entities.Select(x => x);
+            return await Entities.Select(x => x).ToListAsync();
         }
 
-        public T GetById(object id)
+        public async Task<T> GetById(object id)
         {
-            return Entities.Find(id);
+            return await Entities.FindAsync(id);
         }
 
-        public void Insert(T entity)
+        public async void Insert(T entity)
         {
             try
             {
@@ -39,7 +40,7 @@ namespace AccountManager.Data.Implements
                     throw new ArgumentNullException(nameof(entity));
                 }
                 Entities.Add(entity);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception dbEx)
             {
@@ -47,7 +48,7 @@ namespace AccountManager.Data.Implements
             }
         }
 
-        public void Update(T entity)
+        public async void Update(T entity)
         {
             try
             {
@@ -55,7 +56,7 @@ namespace AccountManager.Data.Implements
                 {
                     throw new ArgumentNullException(nameof(entity));
                 }
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception dbEx)
             {

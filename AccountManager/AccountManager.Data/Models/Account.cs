@@ -22,6 +22,9 @@ namespace AccountManager.Data.Models
 
         public byte[] PasswordSalt { get; set; }
 
+        [NotMapped]
+        public string Token { get; set; }
+
         public User User { get; set; }
 
         public ICollection<AccountRole> Roles { get; set; }
