@@ -21,7 +21,7 @@ namespace AccountManager.Data.Implements
             _context = context;
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<List<T>> GetAll()
         {
             return await Entities.Select(x => x).ToListAsync();
         }
@@ -39,7 +39,7 @@ namespace AccountManager.Data.Implements
                 {
                     throw new ArgumentNullException(nameof(entity));
                 }
-                Entities.Add(entity);
+                await Entities.AddAsync(entity);
                 await _context.SaveChangesAsync();
             }
             catch (Exception dbEx)
@@ -64,7 +64,7 @@ namespace AccountManager.Data.Implements
             }
         }
 
-        public void Delete(T entity)
+        public async void Delete(T entity)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace AccountManager.Data.Implements
                 }
 
                 Entities.Remove(entity);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception dbEx)
             {

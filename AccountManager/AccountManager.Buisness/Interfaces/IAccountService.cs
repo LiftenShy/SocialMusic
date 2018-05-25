@@ -8,7 +8,7 @@ namespace AccountManager.Buisness.Interfaces
     {
         Task<Account> Authenticate(string email, string password);
 
-        Task<IEnumerable<Account>> GetAll();
+        Task<List<Account>> GetAll();
 
         Task<Account> GetByUsername(string username);
 

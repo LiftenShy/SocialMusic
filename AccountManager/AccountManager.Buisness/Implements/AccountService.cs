@@ -33,7 +33,7 @@ namespace AccountManager.Buisness.Implements
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 return null;
 
-            var account = await _accountRepository.Table.Include(a => a.Roles)
+            var account =  await _accountRepository.Table.Include(a => a.Roles)
                                                   .ThenInclude(ar => ar.Role)
                                                   .FirstOrDefaultAsync(x => x.Email == email);
 
@@ -59,10 +59,13 @@ namespace AccountManager.Buisness.Implements
                 SigningCredentials =
                     new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-            foreach (var role in account.Roles)
-            {
-                tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
-            }
+
+            tokenDescriptor.Subject.AddClaims(new List<Claim>(account.Roles.Select(x => new Claim(ClaimTypes.Role, x.Role.Name))));
+
+            //foreach (var role in account.Roles) is more useful?
+            //{
+            //    tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
+            //}
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             account.Token = tokenHandler.WriteToken(token);
@@ -85,7 +88,7 @@ namespace AccountManager.Buisness.Implements
             account.PasswordHash = passwordHash;
             account.PasswordSalt = passwordSalt;
 
-            var role = _roleRepository.Table.FirstOrDefault(r => r.Name.Equals("User"));
+            var role = await _roleRepository.Table.FirstOrDefaultAsync(r => r.Name.Equals("User"));
 
             if (role is null)
             {
@@ -113,7 +116,7 @@ namespace AccountManager.Buisness.Implements
             }
         }
 
-        public async Task<IEnumerable<Account>> GetAll()
+        public async Task<List<Account>> GetAll()
         {
             return await _accountRepository.GetAll();
         }
@@ -137,7 +140,7 @@ namespace AccountManager.Buisness.Implements
 
             if (accountParam.Email != account.Email)
             {
-                if (_accountRepository.Table.Any(x => x.Email == accountParam.Email))
+                if (await _accountRepository.Table.AnyAsync(x => x.Email == accountParam.Email))
                 {
                     throw new ArgumentException($"Email {accountParam.Username} is already taken");
                 }

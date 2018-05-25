@@ -9,7 +9,7 @@ namespace AccountManager.Data.Interfaces
     {
         IQueryable<T> Table { get; }
 
-        Task<IEnumerable<T>> GetAll();
+        Task<List<T>> GetAll();
 
         Task<T> GetById(object id);
 

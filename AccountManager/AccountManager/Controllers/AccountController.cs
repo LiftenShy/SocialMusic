@@ -34,32 +34,34 @@ namespace AccountManager.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] AccountDto accountDto)
         {
-            var account = await _accountService.Authenticate(accountDto.Email, accountDto.Password);
-
-            if (account == null)
+            try
             {
-                return NotFound();
+                var account = await _accountService.Authenticate(accountDto.Email, accountDto.Password);
+
+                if (account == null)
+                {
+                    return NotFound("Not found account this email");
+                }
+
+                return Ok(new { account.Token });
             }
-
-            return Ok(new
+            catch (Exception ex)
             {
-                account.AccountId,
-                account.Username,
-                account.Email,
-                account.Token
-            });
+                return BadRequest(ex.Message);
+            }
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Register([FromBody] AccountDto accountDto)
+        public async Task<IActionResult> Register([FromBody] AccountDto accountDto)
         {
             var account = _mapper.Map<Account>(accountDto);
 
             try
             {
-                _accountService.Create(account, accountDto.Password);
-                return Ok();
+                await _accountService.Create(account, accountDto.Password);
+                await _accountService.Authenticate(account.Email, accountDto.Password);
+                return Ok(new { account.Token });
             }
             catch (Exception ex)
             {
@@ -71,22 +73,36 @@ namespace AccountManager.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetAll()
         {
-            var account = await _accountService.GetAll();
-            var accountDtos = _mapper.Map<IList<AccountDto>>(account);
-            return Ok(accountDtos);
+            try
+            {
+                var account = await _accountService.GetAll();
+                var accountDtos = _mapper.Map<IList<AccountDto>>(account);
+                return Ok(accountDtos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{Email}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByEmail(string email)
         {
-            var account = await _accountService.GetByUsername(email);
-            var accountDto = _mapper.Map<AccountDto>(account);
-            return Ok(accountDto);
+            try
+            {
+                var account = await _accountService.GetByUsername(email);
+                var accountDto = _mapper.Map<AccountDto>(account);
+                return Ok(accountDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] AccountDto accountDto)
+        public async Task<IActionResult> Update(int id, [FromBody] AccountDto accountDto)
         {
             var account = _mapper.Map<Account>(accountDto);
             account.AccountId = id;
@@ -103,10 +119,21 @@ namespace AccountManager.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _accountService.Delete(id);
-            return Ok();
+            if (id == 0)
+            {
+                NotFound($"Id: {id} not found");
+            }
+            try
+            {
+                _accountService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
