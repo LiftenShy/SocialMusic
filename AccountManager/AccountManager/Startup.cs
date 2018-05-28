@@ -83,23 +83,23 @@ namespace AccountManager
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
-                
-                })
-                .AddFacebook(options =>
-                {
-                    options.AppId = Configuration["auth:facboo"];
-                    options.AppSecret = Configuration[""];
-                })
-                .AddGoogle(options =>
-                {
-                    options.ClientId = Configuration["auth:google:clientid"];
-                    options.ClientSecret = Configuration["auth:google:clientsecret"];
-                })
-                .AddTwitter(options =>
-                {
-                    options.ConsumerKey = Configuration["auth:twitter:consumerkey"];
-                    options.ConsumerSecret = Configuration["auth:twitter:consumersecret"];
-                }); ; ;
+
+                });
+                //.AddFacebook(options =>
+                //{
+                //    options.AppId = Configuration["auth:facboo"];
+                //    options.AppSecret = Configuration[""];
+                //})
+                //.AddGoogle(options =>
+                //{
+                //    options.ClientId = Configuration["auth:google:clientid"];
+                //    options.ClientSecret = Configuration["auth:google:clientsecret"];
+                //})
+                //.AddTwitter(options =>
+                //{
+                //    options.ConsumerKey = Configuration["auth:twitter:consumerkey"];
+                //    options.ConsumerSecret = Configuration["auth:twitter:consumersecret"];
+                //});
 
             services.AddScoped<DbContext, AccountManagerContext>();
             services.AddScoped<IAccountService, AccountService>();
@@ -129,6 +129,7 @@ namespace AccountManager
 
             app.UseDeveloperExceptionPage();
 
+            app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage();
 
             var options = new RewriteOptions().AddRedirectToHttps();
