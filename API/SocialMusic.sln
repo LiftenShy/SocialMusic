@@ -9,12 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountManager", "AccountMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountManager.Data", "AccountManager\AccountManager.Data\AccountManager.Data.csproj", "{78D0546F-5BC2-4EB2-9070-5C9C2165CA27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountManager.Buisness", "AccountManager\AccountManager.Buisness\AccountManager.Buisness.csproj", "{6792B8EC-D2A9-4EF1-BD2A-3160624E6B20}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MainPage", "MainPage", "{E45C0F3D-BE2A-4C86-8365-7502FB87A86B}"
-	ProjectSection(SolutionItems) = preProject
-		MainPage\ReadMe.txt = MainPage\ReadMe.txt
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountManager.Buisness", "AccountManager\AccountManager.Buisness\AccountManager.Buisness.csproj", "{6792B8EC-D2A9-4EF1-BD2A-3160624E6B20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
