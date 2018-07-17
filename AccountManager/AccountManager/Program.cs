@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Net;
+using AccountManager.Certificate;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace AccountManager
 {
@@ -19,6 +14,15 @@ namespace AccountManager
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseKestrel(options =>
+                {
+                    options.Listen(IPAddress.Loopback, 50608);
+                    options.Listen(IPAddress.Any, 80);
+                    options.Listen(IPAddress.Loopback, 443, listenOptions =>
+                    {
+                        listenOptions.UseHttps(Cerftificate.Get());
+                    });
+                })
                 .UseStartup<Startup>()
                 .Build();
     }
