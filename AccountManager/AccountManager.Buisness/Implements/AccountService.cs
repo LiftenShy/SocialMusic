@@ -39,7 +39,7 @@ namespace AccountManager.Buisness.Implements
 
             if (account == null)
             {
-                throw new ArgumentException("Account with this email don't found");
+                throw new ArgumentException("Account with this email didn't found");
             }
 
             if (CryptoService.VerifyPasswordHash(password, account.PasswordHash, account.PasswordSalt))
@@ -61,11 +61,6 @@ namespace AccountManager.Buisness.Implements
             };
 
             tokenDescriptor.Subject.AddClaims(new List<Claim>(account.Roles.Select(x => new Claim(ClaimTypes.Role, x.Role.Name))));
-
-            //foreach (var role in account.Roles) is more useful?
-            //{
-            //    tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
-            //}
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             account.Token = tokenHandler.WriteToken(token);
@@ -136,7 +131,9 @@ namespace AccountManager.Buisness.Implements
             var account = await _accountRepository.GetById(accountParam.AccountId);
 
             if (account == null)
+            {
                 throw new ArgumentException("User not found");
+            }
 
             if (accountParam.Email != account.Email)
             {
