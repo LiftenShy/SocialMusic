@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  auth:
+    image: ${DOCKER_REGISTRY}auth
+    build:
+      context: .
+      dockerfile: API\Auth\Dockerfile
