@@ -4,21 +4,22 @@ using Auth.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SignUpController : ControllerBase
+    public class SignInController : ControllerBase
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
         private readonly ILoginService _loginService;
 
-        public SignUpController(UserManager<IdentityUser> userManager, 
-                                SignInManager<IdentityUser> signInManager,
-                                ILoginService loginService)
+        public SignInController(UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            ILoginService loginService)
         {
             _userManager = userManager;
             _loginService = loginService;
@@ -27,23 +28,17 @@ namespace Auth.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<object> Register([FromBody] AccountDto model)
+        public async Task<object> Login([FromBody] AccountDto model)
         {
-            var user = new IdentityUser
-            {
-                Email = model.Email,
-                UserName = model.NickName
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
             if (result.Succeeded)
             {
-                await _signInManager.SignInAsync(user, false);
-                return await _loginService.GenerateJwtToken(model.Email, user);
+                var appUser = await _userManager.Users.SingleOrDefaultAsync(r => r.Email == model.Email);
+                return await _loginService.GenerateJwtToken(model.Email, appUser);
             }
 
-            return BadRequest(result.Errors);
+            return BadRequest(ModelState);
         }
     }
 }
