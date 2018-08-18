@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,31 +38,48 @@ namespace Auth
                 .AddEntityFrameworkStores<AuthContext>()
                 .AddDefaultTokenProviders();
 
+            services.Configure<IdentityOptions>(opt =>
+            {
+                opt.Password.RequireDigit = true;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequiredUniqueChars = 1;
+                opt.Password.RequiredLength = 6;
+
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                opt.Lockout.MaxFailedAccessAttempts = 5;
+                opt.Lockout.AllowedForNewUsers = true;
+
+                opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                opt.User.RequireUniqueEmail = true;
+            });
+
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = true;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters
                 {
-                    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(cfg =>
-                {
-                    cfg.RequireHttpsMetadata = true;
-                    cfg.SaveToken = true;
-                    cfg.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidIssuer = Configuration["JwtIssuer"],
-                        ValidAudience =  Configuration["JwtIssuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF32.GetBytes(Configuration["JwtKey"])),
-                        ClockSkew = TimeSpan.Zero
-                    };
-                });
+                    ValidIssuer = Configuration["JwtIssuer"],
+                    ValidAudience =  Configuration["JwtIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF32.GetBytes(Configuration["JwtKey"])),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new Info {Title = "SocialMusicAuthGuard v1", Version = "v1"});
             });
 
+            //services.AddSingleton<IEmailSender, EmailSender>();
             services.AddTransient<ILoginService, LoginService>();
 
             services.AddCors();
@@ -84,6 +102,8 @@ namespace Auth
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseHttpsRedirection();
 
             app.UseSwagger();
 
