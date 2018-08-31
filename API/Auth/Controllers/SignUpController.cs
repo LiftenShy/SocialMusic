@@ -37,6 +37,13 @@ namespace Auth.Controllers
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
+            var userInRole = await _userManager.AddToRoleAsync(user, "User");
+
+            if (!userInRole.Succeeded)
+            {
+                return BadRequest(userInRole.Errors);
+            }
+
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
