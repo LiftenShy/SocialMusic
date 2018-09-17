@@ -3,21 +3,21 @@
 
 FROM microsoft/dotnet:2.1-aspnetcore-runtime-nanoserver-1709 AS base
 WORKDIR /app
-EXPOSE 53101
-EXPOSE 44355
+EXPOSE 58491
+EXPOSE 44345
 
 FROM microsoft/dotnet:2.1-sdk-nanoserver-1709 AS build
 WORKDIR /src
-COPY API/Auth/Auth.csproj API/Auth/
-RUN dotnet restore API/Auth/Auth.csproj
+COPY API/Storage/Storage/Storage.csproj API/Storage/Storage/
+RUN dotnet restore API/Storage/Storage/Storage.csproj
 COPY . .
-WORKDIR /src/API/Auth
-RUN dotnet build Auth.csproj -c Release -o /app
+WORKDIR /src/API/Storage/Storage
+RUN dotnet build Storage.csproj -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish Auth.csproj -c Release -o /app
+RUN dotnet publish Storage.csproj -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "Auth.dll"]
+ENTRYPOINT ["dotnet", "Storage.dll"]
