@@ -6,3 +6,10 @@ services:
     build:
       context: .
       dockerfile: API\Auth\Dockerfile
+
+  storage:
+    image: ${DOCKER_REGISTRY}storage
+    build:
+      context: .
+      dockerfile: API\Storage\Storage\Dockerfile
+
