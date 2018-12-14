@@ -2,18 +2,19 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Auth.Data;
+using Auth.Filters;
 using Auth.Services.Implements;
 using Auth.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace Auth
 {
@@ -67,16 +68,25 @@ namespace Auth
                 cfg.SaveToken = true;
                 cfg.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = Configuration["JwtIssuer"],
-                    ValidAudience =  Configuration["JwtIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF32.GetBytes(Configuration["JwtKey"])),
+                    ValidIssuer = "Issuer",
+                    ValidAudience =  "Audience",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtKey"])),
                     ClockSkew = TimeSpan.Zero
                 };
             });
 
             services.AddSwaggerGen(opt =>
             {
-                opt.SwaggerDoc("v1", new Info {Title = "SocialMusicAuthGuard v1", Version = "v1"});
+                opt.SwaggerDoc("v1", new Info {Title = "SocialMusicAuthGuard v1", Version = "v1.0"});
+
+                opt.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description =
+                        "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
             });
 
             //services.AddSingleton<IEmailSender, EmailSender>();
@@ -109,7 +119,10 @@ namespace Auth
 
             app.UseSwaggerUI(opt =>
             {
-                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "SocialMusicAuthGuard v1");
+                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "SocialMusicAuthGuard v1.0");
+
+                opt.DocumentTitle = "Social Music";
+                opt.DocExpansion(DocExpansion.None);
             });
 
             app.UseMvc();

@@ -29,23 +29,16 @@ namespace Auth.Controllers
         [AllowAnonymous]
         public async Task<object> Register([FromBody] AccountDto model)
         {
-            var user = new IdentityUser
-            {
-                Email = model.Email,
-                UserName = model.NickName
-            };
+
+            //autoMapper
+
+            var user = new IdentityUser { Email = model.Email, UserName = model.NickName };
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            var userInRole = await _userManager.AddToRoleAsync(user, "User");
-
-            if (!userInRole.Succeeded)
-            {
-                return BadRequest(userInRole.Errors);
-            }
-
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "User");
                 await _signInManager.SignInAsync(user, false);
                 return await _loginService.GenerateJwtToken(model.Email, user);
             }

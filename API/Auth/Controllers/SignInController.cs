@@ -30,12 +30,12 @@ namespace Auth.Controllers
         [AllowAnonymous]
         public async Task<object> Login([FromBody] AccountDto model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(model.NickName, model.Password, true, false);
 
             if (result.Succeeded)
             {
-                var appUser = await _userManager.Users.SingleOrDefaultAsync(r => r.Email == model.Email);
-                return await _loginService.GenerateJwtToken(model.Email, appUser);
+                var appUser = await _userManager.Users.FirstOrDefaultAsync(r => r.UserName == model.NickName);
+                return await _loginService.GenerateJwtToken(model.NickName, appUser);
             }
 
             return BadRequest(ModelState);

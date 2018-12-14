@@ -21,23 +21,23 @@ namespace Auth.Services.Implements
             _configuration = configuration;
         }
 
-        public async Task<object> GenerateJwtToken(string email, IdentityUser user)
+        public async Task<object> GenerateJwtToken(string nickName, IdentityUser user)
         {
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Sub, nickName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.UtcNow.AddDays(Convert.ToDouble(_configuration["JwtExpireDays"]));
 
             var token = new JwtSecurityToken
             (
-                _configuration["JwtIssure"],
-                _configuration["JwtIssure"],
+                "Issuer",
+                "Audience",
                 claims,
                 expires: expires,
                 signingCredentials: creds
