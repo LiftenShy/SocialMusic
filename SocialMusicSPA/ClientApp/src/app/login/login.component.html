@@ -1,0 +1,17 @@
+<div class="esh-identity">
+  <section class="esh-identity-section"
+           *ngIf="!authenticated">
+      <div class="esh-identity-item"
+           (click)="login()">
+
+          <div class="esh-identity-name esh-identity-name--upper">Login</div>
+      </div>
+  </section>
+
+  <section class="esh-identity-section"
+       *ngIf="authenticated">
+
+      <div class="esh-identity-name">{{userName}}</div>
+      <img class="esh-identity-image" src="assets/images/arrow-down.png">
+  </section>
+</div>

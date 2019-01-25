@@ -1,0 +1,11 @@
+D:\SM\WebHost.Customization\bin\Debug\netcoreapp2.2\WebHost.Customization.deps.json
+D:\SM\WebHost.Customization\bin\Debug\netcoreapp2.2\WebHost.Customization.runtimeconfig.json
+D:\SM\WebHost.Customization\bin\Debug\netcoreapp2.2\WebHost.Customization.runtimeconfig.dev.json
+D:\SM\WebHost.Customization\bin\Debug\netcoreapp2.2\WebHost.Customization.dll
+D:\SM\WebHost.Customization\bin\Debug\netcoreapp2.2\WebHost.Customization.pdb
+D:\SM\WebHost.Customization\obj\Debug\netcoreapp2.2\WebHost.Customization.csprojAssemblyReference.cache
+D:\SM\WebHost.Customization\obj\Debug\netcoreapp2.2\WebHost.Customization.csproj.CoreCompileInputs.cache
+D:\SM\WebHost.Customization\obj\Debug\netcoreapp2.2\WebHost.Customization.AssemblyInfoInputs.cache
+D:\SM\WebHost.Customization\obj\Debug\netcoreapp2.2\WebHost.Customization.AssemblyInfo.cs
+D:\SM\WebHost.Customization\obj\Debug\netcoreapp2.2\WebHost.Customization.dll
+D:\SM\WebHost.Customization\obj\Debug\netcoreapp2.2\WebHost.Customization.pdb

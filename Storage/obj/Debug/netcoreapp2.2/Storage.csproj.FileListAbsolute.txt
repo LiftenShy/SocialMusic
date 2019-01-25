@@ -1,0 +1,14 @@
+D:\SM\Storage\bin\Debug\netcoreapp2.2\Storage.deps.json
+D:\SM\Storage\bin\Debug\netcoreapp2.2\Storage.runtimeconfig.json
+D:\SM\Storage\bin\Debug\netcoreapp2.2\Storage.runtimeconfig.dev.json
+D:\SM\Storage\bin\Debug\netcoreapp2.2\Storage.dll
+D:\SM\Storage\bin\Debug\netcoreapp2.2\Storage.pdb
+D:\SM\Storage\obj\Debug\netcoreapp2.2\Storage.csprojAssemblyReference.cache
+D:\SM\Storage\obj\Debug\netcoreapp2.2\Storage.csproj.CoreCompileInputs.cache
+D:\SM\Storage\obj\Debug\netcoreapp2.2\Storage.RazorAssemblyInfo.cache
+D:\SM\Storage\obj\Debug\netcoreapp2.2\Storage.RazorAssemblyInfo.cs
+D:\SM\Storage\obj\Debug\netcoreapp2.2\Storage.AssemblyInfoInputs.cache
+D:\SM\Storage\obj\Debug\netcoreapp2.2\Storage.AssemblyInfo.cs
+D:\SM\Storage\obj\Debug\netcoreapp2.2\Storage.RazorTargetAssemblyInfo.cache
+D:\SM\Storage\obj\Debug\netcoreapp2.2\Storage.dll
+D:\SM\Storage\obj\Debug\netcoreapp2.2\Storage.pdb

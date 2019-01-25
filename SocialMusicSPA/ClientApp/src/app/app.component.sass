@@ -1,0 +1,67 @@
+@font-face
+  font-family: RockElec
+  src: url("../assets/fonts/ROCKELEC.TTF") format("opentype")
+
+
+%clearfix:after
+  display: block
+  clear: both
+  content: ''
+
+.font-style
+  font-family: 'RockElec'
+  font-size: 36px
+
+.container
+  height: 100%
+  width: 100%
+  background: url("../images/header-background-image-middle.jpg") no-repeat center center fixed
+  background-size: cover
+
+.header
+  display: flex
+  justify-content: space-around
+  align-items: flex-start
+  width: 100%
+  height: 10%
+  .logo
+    order: 1
+    display: flex
+    flex-basis: 250px
+    margin-top: 10px
+    justify-content: center
+    align-items: center
+    @extend .font-style
+    img
+      width: 50px
+      height: 50px
+  .menu
+    order: 3
+    flex-basis: 350px
+    align-self: flex-start
+    margin-top: 20px
+    .header-links
+      display: inline-block
+      margin-left: 10px
+      font-size: 18px
+      &:hover
+        color: #f0a02a
+        cursor: pointer
+  .header-info
+     order: 2
+     margin-left: 100px
+     flex-basis: 400px
+     align-self: center
+     font-size: 28px
+     text-align: center
+
+.content
+  width: 100%
+  height: 80%
+
+.footer
+  display: flex
+  width: 100%
+  height: 10%
+  justify-content: center
+  align-items: flex-end
