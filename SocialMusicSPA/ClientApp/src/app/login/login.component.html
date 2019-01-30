@@ -4,7 +4,7 @@
       <div class="esh-identity-item"
            (click)="login()">
 
-          <div class="esh-identity-name esh-identity-name--upper">Login</div>
+          <div class="esh-identity-name">Sign In</div>
       </div>
   </section>
 
@@ -12,6 +12,7 @@
        *ngIf="authenticated">
 
       <div class="esh-identity-name">{{userName}}</div>
-      <img class="esh-identity-image" src="assets/images/arrow-down.png">
+      <img class="esh-identity-image" src="../../assets/images/arrow-down.png">
+      <div (click)="logout()" class="esh-identity-name">SignOff</div>
   </section>
 </div>

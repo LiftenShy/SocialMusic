@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
-import { Subject, Observable } from 'rxjs';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Injectable }                   from '@angular/core';
+import { Observable, Subject }          from 'rxjs';
+import { map }                          from 'rxjs/operators';
+import { Router }                       from '@angular/router';
+import { ActivatedRoute }               from '@angular/router';
+import { StorageService }               from './storage.service';
+import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http'
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +25,9 @@ export class AuthenticationService {
     private route: ActivatedRoute,
     private _storageService: StorageService) {
 
-    this.headers = new HttpHeaders();
-    this.headers.append('Content-type', 'application/json');
-    this.headers.append('Accept', 'application/json');
+    this.headers = new HttpHeaders()
+        .set('Content-type', 'application/json')
+        .set('Accept', 'application/json');
     this.storage = _storageService;
 
     this.storage.store('identityUrl', this.authorityUrl);
@@ -62,18 +64,7 @@ export class AuthenticationService {
     this.IsAuthorized = true;
     this.storage.store('IsAuthorized', true);
 
-    this.getUserData()
-        .subscribe(data => {
-          this.UserData = data;
-          this.storage.store('userData', data);
-
-          this.authenticationSource.next(true);
-          window.location.href = location.origin;
-        },
-        error => this.HandleError(error),
-        () => {
-          console.log(this.UserData);
-        });
+    this.getUserData();
   }
 
   public Authorize() {
@@ -192,27 +183,35 @@ export class AuthenticationService {
     return data;
   }
 
-  private getUserData = (): Observable<string[]> => {
+  private getUserData = () => {
     this.setHeaders();
     if (this.authorityUrl === '') {
       this.authorityUrl = this.storage.retrieve('IdentityUrl');
     }
-    return JSON.parse("user: 'asd'");
-    // return this._http.get(`${this.authorityUrl}/connect/userinfo`, {
-    //   headers: this.headers,
-    //   body: ''
-    // }).pipe(map(res => res.json()));
+
+    this._http.get(this.authorityUrl + '/connect/userinfo', {
+      headers: this.headers
+    }).subscribe(
+        data => {
+        this.UserData = data;
+        this.storage.store('userData', data);
+
+        this.authenticationSource.next(true);
+        window.location.href = location.origin;
+      },
+      error => this.HandleError(error),
+      () => {
+        console.log(this.UserData);
+      });
   }
 
   private setHeaders() {
-    this.headers = new HttpHeaders();
-    this.headers.append('Content-Type', 'application/json');
-    this.headers.append('Accept', 'application/json');
+    this.headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
 
     let token = this.GetToken();
 
     if(token !== '') {
-      this.headers.append('Authorization', `Bearer ${token}`);
+      this.headers = this.headers.set('Authorization', `Bearer ${token}`);
     }
   }
 }

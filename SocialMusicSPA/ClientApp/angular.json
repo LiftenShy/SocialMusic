@@ -26,7 +26,8 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/assets",
-              "src/assets/fonts"
+              "src/assets/fonts",
+              "src/assets/images"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -84,7 +85,8 @@
             "scripts": [],
             "assets": [
               "src/assets",
-              "src/assets/fonts"
+              "src/assets/fonts",
+              "src/assets/images"
             ]
           }
         },

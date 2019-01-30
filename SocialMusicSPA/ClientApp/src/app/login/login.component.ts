@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
      ngOnInit() {
       this.subscription = this.service.authenticationChallenge$.subscribe(res => {
           this.authenticated = res;
-          this.userName = this.service.UserData.email;
+          this.userName = this.service.UserData.name;
       });
 
       if (window.location.hash) {
@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
 
       if (this.authenticated) {
           if (this.service.UserData)
-              this.userName = this.service.UserData.email;
+              this.userName = this.service.UserData.name;
       }
   }
 
